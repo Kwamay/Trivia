@@ -1,9 +1,7 @@
-console.log('hey',document)
-
 let score = document.getElementById('scores')
 score.innerHTML = '0';
 let timer = document.getElementById('timer')
-timer.innerHTML = 10000;
+timer.innerHTML = 20;
 let question = document.getElementById('questionRow')
 question.innerHTML = '1. loading';
 let a = document.getElementById('a')
@@ -23,27 +21,12 @@ async function getQandAns() {
     const myJson = await response.json();
     allQandAns = myJson.results;
 
-    startGame();
+    displayQuestion();
 }
-function startGame() {
+function displayQuestion() {
     curQandAns = allQandAns[questionNum];
     console.log('This is the correct answer', curQandAns.correct_answer)
     question.innerHTML = `${questionNum + 1}. ${curQandAns.question}`
-//    Timer
-setInterval(() => {
-    timer -= 1000;
-    timer.innerHTML = msToTimeString(timer);
-}, 1000);
-function msToTimeString(ms) {
-    let seconds = (ms / 1000) % 60;
-   
-    seconds = ('0' + seconds).slice(-2);
-
-    return `${seconds}`;
-}
-// Fix the bug where clicking 'Start Timer' more than once speeds up the timer.
-// Add a button to stop the timer
-// Add a button to reset the timer
 
     // Shuffle Possible answers
     let possibleAns = curQandAns.incorrect_answers
@@ -54,7 +37,9 @@ function msToTimeString(ms) {
     c.innerHTML = `c. ${newPossibleAns[2]}`
     d.innerHTML = `d. ${newPossibleAns[3]}`
 }
+
 getQandAns();
+timeTick();
 
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -80,47 +65,72 @@ a.addEventListener("click", function (event) {
     } else {
         a.style.border = '2px solid red'
     }
+    highLightCorrectAnswer();
 })
 b.addEventListener("click", function (event) {
     if (b.innerHTML == `b. ${curQandAns.correct_answer}`) {
         b.style.border = '2px solid green'
-        b.setTimeout((response = await fetch('https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple')) => {
-            
-        }, 3000); 
-   
+
     } else {
         b.style.border = '2px solid red'
     }
+    highLightCorrectAnswer();
 })
 d.addEventListener("click", function (event) {
-    if (d.innerHTML == 'd. '+ curQandAns.correct_answer) {
+    if (d.innerHTML == 'd. ' + curQandAns.correct_answer) {
         d.style.border = '2px solid green'
-        d.setTimeout((response = await fetch('https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple')) => {
-        }, 3000); 
-   
+
     } else {
         d.style.border = '2px solid red'
     }
+    highLightCorrectAnswer();
 })
 c.addEventListener("click", function (event) {
-    if (c.innerHTML == 'c. '+ curQandAns.correct_answer) {
+    if (c.innerHTML == 'c. ' + curQandAns.correct_answer) {
         c.style.border = '2px solid green'
-        c.setTimeout((response = await fetch('https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple')) => {
-            
-        }, 3000); 
     } else {
         c.style.border = '2px solid red'
-       
     }
+    highLightCorrectAnswer();
 })
 
-// function answer(arg) {
-//     if (a.innerHTML == `a. ${curQandAns.correct_answer}`){
-//         a.style.border = '2px solid green'
+function  goToNextQuestion() {
+    setTimeout(() => {
+        questionNum += 1;
+        clearLineBorders();
+        displayQuestion();
+    }, 2000)
+}
 
-//     } if(b.innerHTML == `b. ${curQandAns.correct_answer}`){
-//         b.style.border = '2px solid green'
-//     }  b.setTimeout 
-//   }
-  
-//   setTimeout(answer, 3000, getQandAns());
+function highLightCorrectAnswer() {
+    if (a.innerHTML == `a. ${curQandAns.correct_answer}`)
+        a.style.border = '2px solid green'
+    else if (b.innerHTML == `b. ${curQandAns.correct_answer}`)
+        b.style.border = '2px solid green'
+    else if (c.innerHTML == `c. ${curQandAns.correct_answer}`)
+        c.style.border = '2px solid green'
+    else {
+        d.style.border = '2px solid green'
+    }
+    goToNextQuestion();
+}
+
+function timeTick() {
+    setInterval(() => {
+        timer.innerHTML -= 1;
+        if (timer.innerHTML == 0){
+           goToNextQuestion();
+        }
+    }, 1000);
+}
+
+function scoreMarks() {
+
+}
+
+function clearLineBorders() {
+    a.style.border = '2px solid rgba(243, 241, 241, 0.651)';
+    b.style.border = '2px solid rgba(243, 241, 241, 0.651)';
+    c.style.border = '2px solid rgba(243, 241, 241, 0.651)';
+    d.style.border = '2px solid rgba(243, 241, 241, 0.651)';
+}
