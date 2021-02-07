@@ -1,5 +1,5 @@
 let score = document.getElementById('scores')
-score.innerHTML = '0';
+score.innerHTML = 0;
 let timer = document.getElementById('timer')
 timer.innerHTML = 20;
 let question = document.getElementById('questionRow')
@@ -62,43 +62,50 @@ function shuffle(array) {
 a.addEventListener("click", function (event) {
     if (a.innerHTML == `a. ${curQandAns.correct_answer}`) {
         a.style.border = '2px solid green'
+        scoreMarks();
     } else {
         a.style.border = '2px solid red'
     }
     highLightCorrectAnswer();
+
 })
 b.addEventListener("click", function (event) {
     if (b.innerHTML == `b. ${curQandAns.correct_answer}`) {
         b.style.border = '2px solid green'
-
+        scoreMarks();
     } else {
         b.style.border = '2px solid red'
     }
     highLightCorrectAnswer();
+
 })
 d.addEventListener("click", function (event) {
     if (d.innerHTML == 'd. ' + curQandAns.correct_answer) {
         d.style.border = '2px solid green'
-
+        scoreMarks();
     } else {
         d.style.border = '2px solid red'
     }
     highLightCorrectAnswer();
+
 })
 c.addEventListener("click", function (event) {
     if (c.innerHTML == 'c. ' + curQandAns.correct_answer) {
         c.style.border = '2px solid green'
+        scoreMarks();
     } else {
         c.style.border = '2px solid red'
     }
     highLightCorrectAnswer();
+
 })
 
-function  goToNextQuestion() {
+function goToNextQuestion() {
     setTimeout(() => {
         questionNum += 1;
         clearLineBorders();
         displayQuestion();
+        timer.innerHTML = 20;
     }, 2000)
 }
 
@@ -118,14 +125,16 @@ function highLightCorrectAnswer() {
 function timeTick() {
     setInterval(() => {
         timer.innerHTML -= 1;
-        if (timer.innerHTML == 0){
-           goToNextQuestion();
+        if (timer.innerHTML == 0) {
+            goToNextQuestion();
         }
     }, 1000);
 }
 
-function scoreMarks() {
 
+function scoreMarks() {
+   console.log(score.innerHTML); 
+   score.innerHTML = 5 + +score.innerHTML;
 }
 
 function clearLineBorders() {
